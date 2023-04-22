@@ -3,6 +3,7 @@
 #include <process/funcs.h>
 #include <system/funcs.h>
 #include <intrin.h>
+#include "mouse.hpp"
 
 uintptr_t swap_process(uintptr_t new_process)
 {
@@ -160,22 +161,9 @@ __int64 __fastcall core_hook::hooked_fptr(void* a1)
 			ObDereferenceObject(proc);
 			break;
 		}
-		case fptr_data::kernel_opr::get_process_peb:
+		case fptr_data::kernel_opr::mouse:
 		{
-			NTSTATUS status = STATUS_SUCCESS;
-
-			PEPROCESS proc = process::get_by_id(com->target_pid, &status);
-			if (!NT_SUCCESS(status))
-			{
-				com->error = fptr_data::kernel_err::invalid_process;
-				com->success = false;
-				printf("get_process_peb failed: invalid process.\n");
-				return 0;
-			}
-
-			com->buffer = (uintptr_t)process::PsGetProcessPeb(proc);
-			ObDereferenceObject(proc);
-			break;
+		
 		}
 		default:
 		{
